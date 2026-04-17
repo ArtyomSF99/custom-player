@@ -9,9 +9,12 @@ export function TimelineTrack({
   duration,
   hoveredState,
   onKeyDown,
+  onLostPointerCapture,
+  onPointerCancel,
   onPointerDown,
   onPointerLeave,
   onPointerMove,
+  onPointerUp,
   playheadPercent,
   trackRef,
 }: TimelineTrackProps) {
@@ -28,9 +31,12 @@ export function TimelineTrack({
       role="slider"
       tabIndex={0}
       onKeyDown={onKeyDown}
+      onLostPointerCapture={onLostPointerCapture}
+      onPointerCancel={onPointerCancel}
       onPointerDown={onPointerDown}
       onPointerLeave={onPointerLeave}
       onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
     >
       <div className="flex gap-[0.32rem]">
         {chapterSegments.map((chapter) => {

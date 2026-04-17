@@ -22,12 +22,18 @@ export function Timeline({ bufferedTime, chapters, currentTime, duration, onSeek
   const ariaValueText = useMemo(() => `${formatTime(currentTime)} of ${formatTime(duration)}`, [currentTime, duration]);
   const handleKeyDown = useTimelineKeyboard(currentTime, duration, onSeek);
 
-  const { handlePointerDown, handlePointerLeave, handlePointerMove, hoverLeftPercent, hoveredState, playheadPercent, trackRef } = useTimelineHover(
-    chapters,
-    currentTime,
-    duration,
-    onSeek,
-  );
+  const {
+    handleLostPointerCapture,
+    handlePointerCancel,
+    handlePointerDown,
+    handlePointerLeave,
+    handlePointerMove,
+    handlePointerUp,
+    hoverLeftPercent,
+    hoveredState,
+    playheadPercent,
+    trackRef,
+  } = useTimelineHover(chapters, currentTime, duration, onSeek);
 
   return (
     <div className="relative pt-[0.2rem]">
@@ -43,9 +49,12 @@ export function Timeline({ bufferedTime, chapters, currentTime, duration, onSeek
         duration={duration}
         hoveredState={hoveredState}
         onKeyDown={handleKeyDown}
+        onLostPointerCapture={handleLostPointerCapture}
+        onPointerCancel={handlePointerCancel}
         onPointerDown={handlePointerDown}
         onPointerLeave={handlePointerLeave}
         onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
         playheadPercent={playheadPercent}
         trackRef={trackRef}
       />

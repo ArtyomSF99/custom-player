@@ -5,6 +5,7 @@ import { clamp, getChapterForTime } from "../lib/utils";
 
 export function useTimelineHover(chapters: Chapter[], currentTime: number, duration: number, onSeek: (time: number) => void) {
   const trackRef = useRef<HTMLDivElement>(null);
+  const activePointerIdRef = useRef<number | null>(null);
   const [hoveredState, setHoveredState] = useState<HoveredTimelineState | null>(null);
 
   const buildHoverState = useCallback(
@@ -31,20 +32,37 @@ export function useTimelineHover(chapters: Chapter[], currentTime: number, durat
 
   const handlePointerMove = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
-      setHoveredState(buildHoverState(event.clientX));
+      const nextHoverState = buildHoverState(event.clientX);
+
+      if (!nextHoverState) {
+        return;
+      }
+
+      setHoveredState(nextHoverState);
+
+      if (activePointerIdRef.current === event.pointerId) {
+        onSeek(nextHoverState.time);
+      }
     },
-    [buildHoverState],
+    [buildHoverState, onSeek],
   );
 
   const handlePointerLeave = useCallback(() => {
+    if (activePointerIdRef.current !== null) {
+      return;
+    }
+
     setHoveredState(null);
   }, []);
 
   const handlePointerDown = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
-      if (event.button !== 0) {
+      if (event.pointerType === "mouse" && event.button !== 0) {
         return;
       }
+
+      event.currentTarget.setPointerCapture(event.pointerId);
+      activePointerIdRef.current = event.pointerId;
 
       const nextHoverState = buildHoverState(event.clientX);
 
@@ -58,13 +76,55 @@ export function useTimelineHover(chapters: Chapter[], currentTime: number, durat
     [buildHoverState, onSeek],
   );
 
+  const handlePointerUp = useCallback(
+    (event: React.PointerEvent<HTMLDivElement>) => {
+      if (activePointerIdRef.current !== event.pointerId) {
+        return;
+      }
+
+      const nextHoverState = buildHoverState(event.clientX);
+
+      if (nextHoverState) {
+        onSeek(nextHoverState.time);
+        setHoveredState(nextHoverState);
+      }
+
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+
+      activePointerIdRef.current = null;
+    },
+    [buildHoverState, onSeek],
+  );
+
+  const handlePointerCancel = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    if (activePointerIdRef.current !== event.pointerId) {
+      return;
+    }
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+
+    activePointerIdRef.current = null;
+    setHoveredState(null);
+  }, []);
+
+  const handleLostPointerCapture = useCallback(() => {
+    activePointerIdRef.current = null;
+  }, []);
+
   const playheadPercent = useMemo(() => clamp((currentTime / duration) * 100, 0, 100), [currentTime, duration]);
   const hoverLeftPercent = useMemo(() => (hoveredState ? clamp(hoveredState.percent * 100, 7, 93) : 0), [hoveredState]);
 
   return {
+    handleLostPointerCapture,
+    handlePointerCancel,
     handlePointerDown,
     handlePointerLeave,
     handlePointerMove,
+    handlePointerUp,
     hoverLeftPercent,
     hoveredState,
     playheadPercent,
