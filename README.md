@@ -2,6 +2,9 @@
 
 Standalone React + Vite HLS video player used for the assignment in this repository.
 
+# Demo 
+Link: [Custom Player](https://custom-player-iota.vercel.app/)
+
 ## Requirements
 
 - Node.js 22+
