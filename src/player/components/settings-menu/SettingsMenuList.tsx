@@ -1,3 +1,4 @@
+import { PLAYER_TEXT } from "../../lib/text";
 import type { SettingsMenuListProps } from "./types";
 
 export function SettingsMenuList({ isMobile, onOpenChange, onSelectQuality, options, selectedLevel }: SettingsMenuListProps) {
@@ -16,7 +17,7 @@ export function SettingsMenuList({ isMobile, onOpenChange, onSelectQuality, opti
     const optionClassName = `flex w-full items-center justify-between gap-3 border-none text-left text-[#f6f7fb] transition hover:bg-white/10 ${
       isMobile ? "rounded-[0.95rem] px-[0.95rem] py-[0.9rem]" : "rounded-[0.8rem] px-3 py-[0.68rem]"
     } ${isActive ? "bg-[rgba(119,157,255,0.18)]" : "bg-transparent"}`;
-    const activeLabel = isActive ? <span className="text-[0.78rem] text-[rgba(222,231,255,0.88)]">Active</span> : null;
+    const activeLabel = isActive ? <span className="text-[0.78rem] text-[rgba(222,231,255,0.88)]">{PLAYER_TEXT.settingsMenu.active}</span> : null;
     const handleOptionClick = () => {
       onSelectQuality(option.levelIndex);
       onOpenChange(false);
@@ -38,9 +39,9 @@ export function SettingsMenuList({ isMobile, onOpenChange, onSelectQuality, opti
   });
 
   return (
-    <div className={menuClassName} role="menu" aria-label="Quality settings">
+    <div className={menuClassName} role="menu" aria-label={PLAYER_TEXT.settingsMenu.menuLabel}>
       <div className={headerClassName}>
-        Resolution
+        {PLAYER_TEXT.settingsMenu.resolution}
       </div>
 
       {optionItems}

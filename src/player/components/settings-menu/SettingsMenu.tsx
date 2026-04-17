@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 import { useSettingsMenuDismiss } from "../../hooks/useSettingsMenuDismiss";
 import { useSettingsMenuPosition } from "../../hooks/useSettingsMenuPosition";
 import { SettingsIcon } from "../../icons/SettingsIcon";
+import { PLAYER_TEXT } from "../../lib/text";
 import type { SettingsMenuProps } from "./types";
 import { SettingsMenuList } from "./SettingsMenuList";
 
@@ -40,7 +41,7 @@ export function SettingsMenu({ buttonClassName, isOpen, onOpenChange, onSelectQu
       <button
         type="button"
         className="absolute inset-0 bg-[rgba(5,8,14,0.42)]"
-        aria-label="Close quality settings"
+        aria-label={PLAYER_TEXT.settingsMenu.close}
         onClick={handleCloseMenu}
       />
 
@@ -70,7 +71,7 @@ export function SettingsMenu({ buttonClassName, isOpen, onOpenChange, onSelectQu
         className={buttonClassName}
         aria-expanded={isOpen}
         aria-haspopup="menu"
-        aria-label="Open quality settings"
+        aria-label={PLAYER_TEXT.settingsMenu.open}
         onClick={handleToggleMenu}
       >
         <SettingsIcon width={22} height={22} />

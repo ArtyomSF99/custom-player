@@ -1,4 +1,5 @@
 import { clamp } from "../../lib/utils";
+import { PLAYER_TEXT } from "../../lib/text";
 import type { TimelineTrackProps } from "./types";
 
 export function TimelineTrack({
@@ -58,7 +59,7 @@ export function TimelineTrack({
     <div
       ref={trackRef}
       className="relative cursor-pointer select-none touch-none py-[0.4rem] pb-[0.65rem]"
-      aria-label="Video progress"
+      aria-label={PLAYER_TEXT.timeline.progressLabel}
       aria-orientation="horizontal"
       aria-valuemax={ariaValueMax}
       aria-valuemin={0}
