@@ -48,6 +48,26 @@ export function VideoPlayer({ source }: VideoPlayerProps) {
     await toggleFullscreen();
   }, [revealControls, toggleFullscreen]);
 
+  const handleSectionDoubleClick = useCallback(() => {
+    void handleToggleFullscreen();
+  }, [handleToggleFullscreen]);
+
+  const handleSectionMouseLeave = useCallback(() => {
+    scheduleControlsHide(PLAYER_INTERACTION.mouseLeaveHideDelayMs);
+  }, [scheduleControlsHide]);
+
+  const handleVideoClick = useCallback(() => {
+    void handleTogglePlayback();
+  }, [handleTogglePlayback]);
+
+  const handleControlsToggleFullscreen = useCallback(() => {
+    void handleToggleFullscreen();
+  }, [handleToggleFullscreen]);
+
+  const handleControlsTogglePlayback = useCallback(() => {
+    void handleTogglePlayback();
+  }, [handleTogglePlayback]);
+
   const handleKeyDown = usePlayerKeyboardShortcuts(
     currentTime,
     handleSeek,
@@ -56,21 +76,29 @@ export function VideoPlayer({ source }: VideoPlayerProps) {
     handleToggleMute,
   );
 
+  const handleSectionKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLElement>) => {
+      void handleKeyDown(event);
+    },
+    [handleKeyDown],
+  );
+
   const shouldShowControls = !isFullscreen || controlsVisible || !isPlaying || isSettingsOpen;
   const shellClassName = isFullscreen ? videoPlayerClassNames.fullscreenShell : videoPlayerClassNames.defaultShell;
   const frameClassName = isFullscreen ? videoPlayerClassNames.fullscreenFrame : videoPlayerClassNames.defaultFrame;
   const videoClassName = `${videoPlayerClassNames.videoBase} ${
     isFullscreen ? videoPlayerClassNames.videoContain : videoPlayerClassNames.videoCover
   }`;
+  const errorBanner = error ? <div className={videoPlayerClassNames.errorBanner}>{error}</div> : null;
 
   return (
     <section
       ref={shellRef}
       className={shellClassName}
       tabIndex={0}
-      onDoubleClick={() => void handleToggleFullscreen()}
-      onKeyDown={(event) => void handleKeyDown(event)}
-      onMouseLeave={() => scheduleControlsHide(PLAYER_INTERACTION.mouseLeaveHideDelayMs)}
+      onDoubleClick={handleSectionDoubleClick}
+      onKeyDown={handleSectionKeyDown}
+      onMouseLeave={handleSectionMouseLeave}
       onPointerDown={revealControls}
       onPointerMove={revealControls}
     >
@@ -80,14 +108,10 @@ export function VideoPlayer({ source }: VideoPlayerProps) {
           className={videoClassName}
           playsInline
           preload="metadata"
-          onClick={() => void handleTogglePlayback()}
+          onClick={handleVideoClick}
         />
 
-        {error ? (
-          <div className={videoPlayerClassNames.errorBanner}>
-            {error}
-          </div>
-        ) : null}
+        {errorBanner}
 
         <Controls
           bufferedTime={bufferedTime}
@@ -101,9 +125,9 @@ export function VideoPlayer({ source }: VideoPlayerProps) {
           onOpenSettingsChange={setIsSettingsOpen}
           onSeek={handleSeek}
           onSelectQuality={setQuality}
-          onToggleFullscreen={() => void handleToggleFullscreen()}
+          onToggleFullscreen={handleControlsToggleFullscreen}
           onToggleMute={handleToggleMute}
-          onTogglePlayback={() => void handleTogglePlayback()}
+          onTogglePlayback={handleControlsTogglePlayback}
           qualityOptions={qualityOptions}
           selectedLevel={selectedLevel}
           visible={shouldShowControls}

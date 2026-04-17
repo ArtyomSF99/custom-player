@@ -1,3 +1,6 @@
+import { useCallback } from "react";
+import type { SyntheticEvent } from "react";
+
 import { Timeline } from "../timeline/Timeline";
 import { controlsClassNames, iconButtonClassName } from "./constants";
 import { PlaybackControls } from "./PlaybackControls";
@@ -23,17 +26,18 @@ export function Controls({
   selectedLevel,
   visible,
 }: ControlsProps) {
+  const overlayClassName = `${controlsClassNames.overlay} ${visible ? controlsClassNames.visible : controlsClassNames.hidden}`;
+  const stopControlsPropagation = useCallback((event: SyntheticEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+  }, []);
+
   return (
-    <div
-      className={`${controlsClassNames.overlay} ${
-        visible ? controlsClassNames.visible : controlsClassNames.hidden
-      }`}
-    >
+    <div className={overlayClassName}>
       <div
         className={controlsClassNames.container}
-        onClick={(event) => event.stopPropagation()}
-        onDoubleClick={(event) => event.stopPropagation()}
-        onPointerDown={(event) => event.stopPropagation()}
+        onClick={stopControlsPropagation}
+        onDoubleClick={stopControlsPropagation}
+        onPointerDown={stopControlsPropagation}
       >
         <Timeline bufferedTime={bufferedTime} chapters={chapters} currentTime={currentTime} duration={duration} onSeek={onSeek} />
 

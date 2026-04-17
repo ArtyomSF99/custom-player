@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 
 import { useSettingsMenuDismiss } from "../../hooks/useSettingsMenuDismiss";
@@ -17,45 +17,50 @@ export function SettingsMenu({ buttonClassName, isOpen, onOpenChange, onSelectQu
 
   const { desktopStyle, isMobile } = useSettingsMenuPosition(buttonRef, isOpen);
   const portalTarget = typeof document !== "undefined" ? document.fullscreenElement ?? document.body : null;
+  const handleCloseMenu = useCallback(() => {
+    onOpenChange(false);
+  }, [onOpenChange]);
 
-  const menu =
-    isOpen && portalTarget
-      ? createPortal(
-          isMobile ? (
-            <div className="fixed inset-0 z-[90]">
-              <button
-                type="button"
-                className="absolute inset-0 bg-[rgba(5,8,14,0.42)]"
-                aria-label="Close quality settings"
-                onClick={() => onOpenChange(false)}
-              />
+  const handleToggleMenu = useCallback(() => {
+    onOpenChange(!isOpen);
+  }, [isOpen, onOpenChange]);
 
-              <div ref={menuRef} className="absolute inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-[1]">
-                <SettingsMenuList
-                  isMobile
-                  onOpenChange={onOpenChange}
-                  onSelectQuality={onSelectQuality}
-                  options={options}
-                  selectedLevel={selectedLevel}
-                />
-              </div>
-            </div>
-          ) : (
-            <div className="fixed inset-0 z-[90] pointer-events-none">
-              <div ref={menuRef} className="pointer-events-auto" style={desktopStyle}>
-                <SettingsMenuList
-                  isMobile={false}
-                  onOpenChange={onOpenChange}
-                  onSelectQuality={onSelectQuality}
-                  options={options}
-                  selectedLevel={selectedLevel}
-                />
-              </div>
-            </div>
-          ),
-          portalTarget,
-        )
-      : null;
+  const menuList = (
+    <SettingsMenuList
+      isMobile={isMobile}
+      onOpenChange={onOpenChange}
+      onSelectQuality={onSelectQuality}
+      options={options}
+      selectedLevel={selectedLevel}
+    />
+  );
+
+  const mobileMenu = (
+    <div className="fixed inset-0 z-[90]">
+      <button
+        type="button"
+        className="absolute inset-0 bg-[rgba(5,8,14,0.42)]"
+        aria-label="Close quality settings"
+        onClick={handleCloseMenu}
+      />
+
+      <div ref={menuRef} className="absolute inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-[1]">
+        {menuList}
+      </div>
+    </div>
+  );
+
+  const desktopMenu = (
+    <div className="fixed inset-0 z-[90] pointer-events-none">
+      <div ref={menuRef} className="pointer-events-auto" style={desktopStyle}>
+        {menuList}
+      </div>
+    </div>
+  );
+
+  const menuContent = isMobile ? mobileMenu : desktopMenu;
+
+  const menu = isOpen && portalTarget ? createPortal(menuContent, portalTarget) : null;
 
   return (
     <div ref={rootRef} className="relative">
@@ -66,7 +71,7 @@ export function SettingsMenu({ buttonClassName, isOpen, onOpenChange, onSelectQu
         aria-expanded={isOpen}
         aria-haspopup="menu"
         aria-label="Open quality settings"
-        onClick={() => onOpenChange(!isOpen)}
+        onClick={handleToggleMenu}
       >
         <SettingsIcon width={22} height={22} />
       </button>

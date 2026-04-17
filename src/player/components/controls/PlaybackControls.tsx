@@ -14,11 +14,13 @@ export function PlaybackControls({
   onToggleMute,
   onTogglePlayback,
 }: PlaybackControlsProps) {
+  const volumeControl = isFullscreen ? null : <VolumeControl className={buttonClassName} isMuted={isMuted} onToggleMute={onToggleMute} />;
+
   return (
     <div className={controlsClassNames.group}>
       <PlayButton className={buttonClassName} isPlaying={isPlaying} onClick={onTogglePlayback} />
 
-      {!isFullscreen ? <VolumeControl className={buttonClassName} isMuted={isMuted} onToggleMute={onToggleMute} /> : null}
+      {volumeControl}
 
       <TimeDisplay
         className={controlsClassNames.timeDisplay}

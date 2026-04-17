@@ -3,14 +3,17 @@ import { VolumeMuteIcon } from "../../icons/VolumeMuteIcon";
 import type { VolumeControlProps } from "./types";
 
 export function VolumeControl({ className, isMuted, onToggleMute }: VolumeControlProps) {
+  const ariaLabel = isMuted ? "Unmute video" : "Mute video";
+  const icon = isMuted ? <VolumeMuteIcon width={22} height={22} /> : <VolumeIcon width={22} height={22} />;
+
   return (
     <button
       type="button"
       className={className}
-      aria-label={isMuted ? "Unmute video" : "Mute video"}
+      aria-label={ariaLabel}
       onClick={onToggleMute}
     >
-      {isMuted ? <VolumeMuteIcon width={22} height={22} /> : <VolumeIcon width={22} height={22} />}
+      {icon}
     </button>
   );
 }

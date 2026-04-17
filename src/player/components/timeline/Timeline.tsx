@@ -34,12 +34,13 @@ export function Timeline({ bufferedTime, chapters, currentTime, duration, onSeek
     playheadPercent,
     trackRef,
   } = useTimelineHover(chapters, currentTime, duration, onSeek);
+  const chapterTooltip = hoveredState?.chapter ? (
+    <ChapterTooltip leftPercent={hoverLeftPercent} time={hoveredState.time} title={hoveredState.chapter.title} />
+  ) : null;
 
   return (
     <div className="relative pt-[0.2rem]">
-      {hoveredState?.chapter ? (
-        <ChapterTooltip leftPercent={hoverLeftPercent} time={hoveredState.time} title={hoveredState.chapter.title} />
-      ) : null}
+      {chapterTooltip}
 
       <TimelineTrack
         ariaValueText={ariaValueText}
