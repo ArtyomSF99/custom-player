@@ -25,8 +25,6 @@ export interface TimelineTrackProps {
   onLostPointerCapture: () => void;
   onPointerCancel: (event: React.PointerEvent<HTMLDivElement>) => void;
   onPointerDown: (event: React.PointerEvent<HTMLDivElement>) => void;
-  onPointerLeave: () => void;
-  onPointerMove: (event: React.PointerEvent<HTMLDivElement>) => void;
   onPointerUp: (event: React.PointerEvent<HTMLDivElement>) => void;
   playheadPercent: number;
   trackRef: RefObject<HTMLDivElement | null>;

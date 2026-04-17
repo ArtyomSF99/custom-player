@@ -116,7 +116,6 @@ export function useTimelineHover(chapters: Chapter[], currentTime: number, durat
   }, []);
 
   const playheadPercent = useMemo(() => clamp((currentTime / duration) * 100, 0, 100), [currentTime, duration]);
-  const hoverLeftPercent = useMemo(() => (hoveredState ? clamp(hoveredState.percent * 100, 7, 93) : 0), [hoveredState]);
 
   return {
     handleLostPointerCapture,
@@ -125,7 +124,6 @@ export function useTimelineHover(chapters: Chapter[], currentTime: number, durat
     handlePointerLeave,
     handlePointerMove,
     handlePointerUp,
-    hoverLeftPercent,
     hoveredState,
     playheadPercent,
     trackRef,

@@ -72,6 +72,7 @@ export function SettingsMenu({ buttonClassName, isOpen, onOpenChange, onSelectQu
         aria-expanded={isOpen}
         aria-haspopup="menu"
         aria-label={PLAYER_TEXT.settingsMenu.open}
+        title={PLAYER_TEXT.settingsMenu.open}
         onClick={handleToggleMenu}
       >
         <SettingsIcon width={22} height={22} />

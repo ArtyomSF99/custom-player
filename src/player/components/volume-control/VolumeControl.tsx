@@ -12,6 +12,7 @@ export function VolumeControl({ className, isMuted, onToggleMute }: VolumeContro
       type="button"
       className={className}
       aria-label={ariaLabel}
+      title={ariaLabel}
       onClick={onToggleMute}
     >
       {icon}

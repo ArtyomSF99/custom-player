@@ -2,8 +2,9 @@ import { useMemo } from "react";
 
 import { useTimelineHover } from "../../hooks/useTimelineHover";
 import { useTimelineKeyboard } from "../../hooks/useTimelineKeyboard";
-import { formatTime, getChapterVisualEnd } from "../../lib/utils";
+import { clamp, formatTime, getChapterVisualEnd } from "../../lib/utils";
 import { ChapterTooltip } from "../chapter-tooltip/ChapterTooltip";
+import { TIMELINE_TOOLTIP } from "./constants";
 import type { TimelineProps } from "./types";
 import { TimelineTrack } from "./TimelineTrack";
 
@@ -29,17 +30,32 @@ export function Timeline({ bufferedTime, chapters, currentTime, duration, onSeek
     handlePointerLeave,
     handlePointerMove,
     handlePointerUp,
-    hoverLeftPercent,
     hoveredState,
     playheadPercent,
     trackRef,
   } = useTimelineHover(chapters, currentTime, duration, onSeek);
+  const tooltipAlignment = hoveredState
+    ? hoveredState.percent <= TIMELINE_TOOLTIP.edgeThreshold
+      ? "start"
+      : hoveredState.percent >= 1 - TIMELINE_TOOLTIP.edgeThreshold
+        ? "end"
+        : "center"
+    : "center";
+  const tooltipLeftPercent = hoveredState
+    ? tooltipAlignment === "center"
+      ? clamp(hoveredState.percent * 100, 0, 100)
+      : clamp(
+          hoveredState.percent * 100,
+          TIMELINE_TOOLTIP.edgeInsetPercent,
+          100 - TIMELINE_TOOLTIP.edgeInsetPercent,
+        )
+    : 0;
   const chapterTooltip = hoveredState?.chapter ? (
-    <ChapterTooltip leftPercent={hoverLeftPercent} time={hoveredState.time} title={hoveredState.chapter.title} />
+    <ChapterTooltip alignment={tooltipAlignment} leftPercent={tooltipLeftPercent} time={hoveredState.time} title={hoveredState.chapter.title} />
   ) : null;
 
   return (
-    <div className="relative pt-[0.2rem]">
+    <div className="relative pt-[0.2rem]" onPointerLeave={handlePointerLeave} onPointerMove={handlePointerMove}>
       {chapterTooltip}
 
       <TimelineTrack
@@ -53,8 +69,6 @@ export function Timeline({ bufferedTime, chapters, currentTime, duration, onSeek
         onLostPointerCapture={handleLostPointerCapture}
         onPointerCancel={handlePointerCancel}
         onPointerDown={handlePointerDown}
-        onPointerLeave={handlePointerLeave}
-        onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         playheadPercent={playheadPercent}
         trackRef={trackRef}

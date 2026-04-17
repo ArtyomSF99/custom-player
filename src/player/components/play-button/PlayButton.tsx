@@ -12,6 +12,7 @@ export function PlayButton({ className, isPlaying, onClick }: PlayButtonProps) {
       type="button"
       className={className}
       aria-label={ariaLabel}
+      title={ariaLabel}
       onClick={onClick}
     >
       {icon}

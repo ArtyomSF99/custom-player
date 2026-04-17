@@ -13,8 +13,6 @@ export function TimelineTrack({
   onLostPointerCapture,
   onPointerCancel,
   onPointerDown,
-  onPointerLeave,
-  onPointerMove,
   onPointerUp,
   playheadPercent,
   trackRef,
@@ -71,8 +69,6 @@ export function TimelineTrack({
       onLostPointerCapture={onLostPointerCapture}
       onPointerCancel={onPointerCancel}
       onPointerDown={onPointerDown}
-      onPointerLeave={onPointerLeave}
-      onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
     >
       <div className="flex gap-[0.32rem]">{chapterSegmentNodes}</div>

@@ -13,6 +13,7 @@ export function FullscreenButton({ className, isFullscreen, onClick }: Fullscree
       className={className}
       aria-label={ariaLabel}
       aria-pressed={isFullscreen}
+      title={ariaLabel}
       onClick={onClick}
     >
       {icon}
